@@ -1,5 +1,6 @@
 #include <iostream>
 #include <ctime>
+#include <limits> 
 
 using namespace std;
 
@@ -16,7 +17,7 @@ void showArray(T** arr, size_t rows, size_t cols) {
 template<typename T>
 T** shiftMatrix(T** arr, size_t rows, size_t cols, int shiftCount, bool horizontal) {
     if (horizontal) {
-        // Циклічний зсув горизонтально
+        
         shiftCount %= cols;
         if (shiftCount < 0) {
             shiftCount += cols;
@@ -33,7 +34,7 @@ T** shiftMatrix(T** arr, size_t rows, size_t cols, int shiftCount, bool horizont
         return newArr;
     }
     else {
-        // Циклічний зсув вертикально
+       
         shiftCount %= rows;
         if (shiftCount < 0) {
             shiftCount += rows;
@@ -57,8 +58,27 @@ int main() {
     size_t rows, cols;
     cout << "Enter the number of rows: ";
     cin >> rows;
+
+   
+    while (cin.fail()) {
+        cout << "Invalid input. Please enter a number." << endl;
+        cin.clear(); // Скидаємо прапорці помилки
+        cin.ignore(numeric_limits<streamsize>::max(), '\n');
+        cout << "Enter the number of rows: ";
+        cin >> rows;
+    }
+
     cout << "Enter the number of columns: ";
     cin >> cols;
+
+   
+    while (cin.fail()) {
+        cout << "Invalid input. Please enter a number." << endl;
+        cin.clear();
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
+        cout << "Enter the number of columns: ";
+        cin >> cols;
+    }
 
     int** arr = new int* [rows];
     for (size_t i = 0; i < rows; i++) {
@@ -75,19 +95,43 @@ int main() {
     bool horizontal;
     cout << "Enter the number of shifts: ";
     cin >> shiftCount;
+
+  
+    while (cin.fail()) {
+        cout << "Invalid input. Please enter a number." << endl;
+        cin.clear(); 
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
+        cout << "Enter the number of shifts: ";
+        cin >> shiftCount;
+    }
+
     cout << "Enter the direction (0 for vertical, 1 for horizontal): ";
     cin >> horizontal;
 
-    arr = shiftMatrix(arr, rows, cols, shiftCount, horizontal);
+   
+    while (cin.fail() || (horizontal != 0 && horizontal != 1)) {
+        cout << "Invalid input. Please enter 0 for vertical or 1 for horizontal." << endl;
+        cin.clear(); 
+        cin.ignore(numeric_limits<streamsize>::max(), '\n'); 
+        cout << "Enter the direction (0 for vertical, 1 for horizontal): ";
+        cin >> horizontal;
+    }
+
+    int** shiftedArr = shiftMatrix(arr, rows, cols, shiftCount, horizontal);
 
     cout << "Array after cyclic shift:" << endl;
-    showArray(arr, rows, cols);
+    showArray(shiftedArr, rows, cols);
 
-    
+   
     for (size_t i = 0; i < rows; i++) {
         delete[] arr[i];
     }
     delete[] arr;
+
+    for (size_t i = 0; i < rows; i++) {
+        delete[] shiftedArr[i];
+    }
+    delete[] shiftedArr;
 
     return 0;
 }
